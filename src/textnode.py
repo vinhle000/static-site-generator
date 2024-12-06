@@ -5,8 +5,8 @@ class TextType(Enum):
     BOLD = "bold"
     ITALIC = "italic"
     CODE = "code"
-    LINKS = "links"
-    IMAGES = "images"
+    LINK = "LINK"
+    IMAGE = "images"
 
 class TextNode:
     def __init__(self, text, text_type, url=None):
@@ -34,9 +34,9 @@ class TextNode:
             return f"<i>{text_node.text}</i>"
         elif text_node.text_type == TextType.CODE:
             return f"<code>{text_node.text}</code>"
-        elif text_node.text_type == TextType.LINKS:
+        elif text_node.text_type == TextType.LINK:
             return f'<a href="{text_node.url}">{text_node.text}</a>'
-        elif text_node.text_type == TextType.IMAGES:
+        elif text_node.text_type == TextType.IMAGE:
             return f'<img src="{text_node.url}" alt="{text_node.text}">'
         else:
             raise ValueError("Invalid text type")

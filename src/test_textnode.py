@@ -31,9 +31,9 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(node.text_node_to_html_node(), "<i>This is a text node</i>")
         node = TextNode("This is a text node", TextType.CODE)
         self.assertEqual(node.text_node_to_html_node(), "<code>This is a text node</code>")
-        node = TextNode("This is a text node", TextType.LINKS, "http://www.boot.dev")
+        node = TextNode("This is a text node", TextType.LINK, "http://www.boot.dev")
         self.assertEqual(node.text_node_to_html_node(), '<a href="http://www.boot.dev">This is a text node</a>')
-        node = TextNode("This is a text node", TextType.IMAGES, "http://www.boot.dev")
+        node = TextNode("This is a text node", TextType.IMAGE, "http://www.boot.dev")
         self.assertEqual(node.text_node_to_html_node(), '<img src="http://www.boot.dev" alt="This is a text node">')
 
 

@@ -64,7 +64,7 @@ def split_nodes_image(old_nodes):
                     if sections[0]:
                         new_nodes.append(TextNode(sections[0], TextType.TEXT))
 
-                    new_nodes.append(TextNode(image_alt, TextType.IMAGES, image_link))
+                    new_nodes.append(TextNode(image_alt, TextType.IMAGE, image_link))
                     curr_text = sections[1]
 
                 if curr_text:
@@ -90,7 +90,7 @@ def split_nodes_link(old_nodes):
                     if sections[0]:
                         new_nodes.append(TextNode(sections[0], TextType.TEXT))
 
-                    new_nodes.append(TextNode(link_text, TextType.LINKS, link))
+                    new_nodes.append(TextNode(link_text, TextType.LINK, link))
                     curr_text = sections[1]
 
                 if curr_text:

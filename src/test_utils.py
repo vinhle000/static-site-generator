@@ -135,7 +135,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(result[0], ("to youtube", "https://www.youtube.com/@bootdotdev"))
 
 
-    # Splitting the nodes with image links tests
+    # Splitting the nodes with image LINK tests
     # -------------------------------------------
 
     def test_split_nodes_images(self):
@@ -145,9 +145,9 @@ class TestUtils(unittest.TestCase):
         result = utils.split_nodes_image([node])
         expected_nodes = [
             TextNode("This is text with a ", TextType.TEXT),
-            TextNode("rick roll", TextType.IMAGES, "https://i.imgur.com/aKaOqIh.gif"),
+            TextNode("rick roll", TextType.IMAGE, "https://i.imgur.com/aKaOqIh.gif"),
             TextNode(" and ", TextType.TEXT),
-            TextNode("obi wan", TextType.IMAGES, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode("obi wan", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
         ]
 
         self.assertEqual(len(result), len(expected_nodes))
@@ -162,9 +162,9 @@ class TestUtils(unittest.TestCase):
         result = utils.split_nodes_links([node])
         expected_nodes = [
             TextNode("This is text with a link ", TextType.TEXT),
-            TextNode("to boot dev", TextType.LINKS, "https://www.boot.dev"),
+            TextNode("to boot dev", TextType.LINK, "https://www.boot.dev"),
             TextNode(" and ", TextType.TEXT),
-            TextNode("to youtube", TextType.LINKS, "https://www.youtube.com/@bootdotdev"),
+            TextNode("to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"),
         ]
 
         self.assertEqual(len(result), len(expected_nodes))
@@ -181,20 +181,20 @@ class TestUtils(unittest.TestCase):
         node = TextNode("![image1](url1) text ![image2](url2) more text ![image3](url3)", TextType.TEXT)
         result = utils.split_nodes_image([node])
         expected_nodes = [
-            TextNode("image1", TextType.IMAGES, "url1"),
+            TextNode("image1", TextType.IMAGE, "url1"),
             TextNode(" text ", TextType.TEXT),
-            TextNode("image2", TextType.IMAGES, "url2"),
+            TextNode("image2", TextType.IMAGE, "url2"),
             TextNode(" more text ", TextType.TEXT),
-            TextNode("image3", TextType.IMAGES, "url3"),
+            TextNode("image3", TextType.IMAGE, "url3"),
         ]
         self.assertEqual(len(result), len(expected_nodes))
         for i in range(len(result)):
             self.assertEqual(result[i], expected_nodes[i])
 
     def test_split_nodes_links_no_link(self):
-        node = TextNode("This is text with no links", TextType.TEXT)
+        node = TextNode("This is text with no LINK", TextType.TEXT)
         result = utils.split_nodes_link([node])
-        expected_nodes = [TextNode("This is text with no links", TextType.TEXT)]
+        expected_nodes = [TextNode("This is text with no LINK", TextType.TEXT)]
         self.assertEqual(result, expected_nodes)
 
     def test_split_nodes_links_multiple_links(self):
@@ -202,9 +202,9 @@ class TestUtils(unittest.TestCase):
         result = utils.split_nodes_link([node])
         expected_nodes = [
             TextNode("This is a ", TextType.TEXT),
-            TextNode("link1", TextType.LINKS, "url1"),
+            TextNode("link1", TextType.LINK, "url1"),
             TextNode(" and another ", TextType.TEXT),
-            TextNode("link2", TextType.LINKS, "url2"),
+            TextNode("link2", TextType.LINK, "url2"),
         ]
         self.assertEqual(len(result), len(expected_nodes))
         for i in range(len(result)):
@@ -216,9 +216,9 @@ class TestUtils(unittest.TestCase):
         result = utils.split_nodes_image(result)
         expected_nodes = [
             TextNode("This is a ", TextType.TEXT),
-            TextNode("link", TextType.LINKS, "url"),
+            TextNode("link", TextType.LINK, "url"),
             TextNode(" and an image ", TextType.TEXT),
-            TextNode("image", TextType.IMAGES, "url"),
+            TextNode("image", TextType.IMAGE, "url"),
         ]
         self.assertEqual(len(result), len(expected_nodes))
         for i in range(len(result)):
@@ -236,13 +236,11 @@ class TestUtils(unittest.TestCase):
                 TextNode(" word and a ", TextType.TEXT),
                 TextNode("code block", TextType.CODE),
                 TextNode(" and an ", TextType.TEXT),
-                TextNode("obi wan image", TextType.IMAGES, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
                 TextNode(" and a ", TextType.TEXT),
-                TextNode("link", TextType.LINKS, "https://boot.dev"),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
             ]
 
-
-        print('RESULTS text to textnodes -----> ', result)
         self.assertEqual(len(result), len(expected_nodes))
 
         for i in range(len(result)):
