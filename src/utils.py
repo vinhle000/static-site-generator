@@ -1,4 +1,5 @@
 from textnode import TextNode, TextType
+import re
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -34,11 +35,18 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
         return new_nodes
 
-    # text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
-    # print(extract_markdown_images(text))
-    # [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
-    def extract_markdown_images(text):
-        # neecj ti naje a regex ti extract the markdown images frin the text to tuple
-        # regex = r"!\[(.*?)\]\((.*?)\)"
-        regex = r"!\[(?P<text>.*?)\]\((?P<url>.*?)\)"
-        matches = re.findall(regex, text)
+# text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+# print(extract_markdown_images(text))
+# [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+def extract_markdown_images(text):
+    # neecj ti naje a regex ti extract the markdown images frin the text to tuple
+    # regex = r"!\[(.*?)\]\((.*?)\)"
+    # regex = r"!\[(?P<text>.*?)\]\((?P<url>.*?)\)"
+    regex = r"!\[(?P<text>[^\[\]]+)\]\((?P<url>[^\(\)]+)\)"
+    matches = re.findall(regex, text)
+    return matches
+
+def extract_markdown_links(text):
+    regex = r"(?<!\!)\[(?P<text>[^\[\]]+)\]\((?P<url>[^\(\)]+)\)"
+    matches = re.findall(regex, text)
+    return matches

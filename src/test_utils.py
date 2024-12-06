@@ -102,3 +102,34 @@ class TestUtils(unittest.TestCase):
         node = TextNode("This is text with a `code block", TextType.TEXT)
         with self.assertRaises(Exception):
             utils.split_nodes_delimiter([node], "`", TextType.CODE)
+
+
+    def test_extract_markdown_images(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        result = utils.extract_markdown_images(text)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0], ("rick roll", "https://i.imgur.com/aKaOqIh.gif"))
+        self.assertEqual(result[1], ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg"))
+
+    def test_extract_markdown_links(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        result = utils.extract_markdown_links(text)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0], ("to boot dev", "https://www.boot.dev"))
+        self.assertEqual(result[1], ("to youtube", "https://www.youtube.com/@bootdotdev"))
+
+       # missing ']' in the first link and '!' in the second image
+    def test_extract_markdown_images(self):
+        # text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        text = "This is text with a ![rick roll(https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        result = utils.extract_markdown_images(text)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0], ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg"))
+
+    # First is image link and second is text link
+    def test_invalid_markdown_links(self):
+        # text = "This is text with a  image ![rick roll](https://i.imgur.com/aKaOqIh.gif) and link [to youtube](https://www.youtube.com/@bootdotdev"
+        text = "This is text with a IMAGE ![rick roll](https://i.imgur.com/aKaOqIh.gif) and LINK [to youtube](https://www.youtube.com/@bootdotdev)"
+        result = utils.extract_markdown_links(text)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0], ("to youtube", "https://www.youtube.com/@bootdotdev"))
