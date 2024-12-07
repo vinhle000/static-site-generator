@@ -224,7 +224,7 @@ class TestUtils(unittest.TestCase):
         for i in range(len(result)):
             self.assertEqual(result[i], expected_nodes[i])
 
-
+    # TODO: split test case
     def test_text_to_textnodes(self):
         text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         result = utils.text_to_textnodes(text)
@@ -245,3 +245,29 @@ class TestUtils(unittest.TestCase):
 
         for i in range(len(result)):
             self.assertEqual(result[i], expected_nodes[i])
+
+
+    # TODO: split test case
+    def test_markdown_to_blocks(self):
+        markdown_text = """
+            # This is a heading
+
+
+             This is a paragraph of text. It has some **bold** and *italic* words inside of it.
+
+
+            * This is the first list item in a list block
+            * This is a list item
+            * This is another list item"""
+
+        result = utils.markdown_to_blocks(markdown_text)
+        expected_blocks = [
+            "# This is a heading",
+            "This is a paragraph of text. It has some **bold** and *italic* words inside of it.",
+            "* This is the first list item in a list block\n* This is a list item\n* This is another list item"
+        ]
+
+        self.assertEqual(len(result), len(expected_blocks))
+
+        for i in range(len(result)):
+            self.assertEqual(result[i], expected_blocks[i])

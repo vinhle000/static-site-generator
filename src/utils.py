@@ -109,3 +109,21 @@ def text_to_textnodes(text):
     nodes = split_nodes_image(nodes)
     nodes = split_nodes_link(nodes)
     return nodes
+
+
+
+def markdown_to_blocks(markdown):
+    blocks = []
+    for block in markdown.split("\n\n"):
+        block = block.strip()
+
+        if block:
+            # handle list blocks
+            if block.startswith('* ') or block.startswith('- '):
+                #remove leading spaces from each line in unordered list
+                lines = block.split("\n")
+                lines = [line.lstrip() for line in lines]
+                block = "\n".join(lines)
+
+            blocks.append(block)
+    return blocks
