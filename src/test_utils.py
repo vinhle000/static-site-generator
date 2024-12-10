@@ -325,7 +325,15 @@ class TestUtils(unittest.TestCase):
         result = utils.block_to_block_type(block)
         self.assertEqual(result, "paragraph")
 
-
+    # ---------------------------
+    # markdown to html node tests
+    # ---------------------------
+    def test_markdown_to_html_node_as_div(self):
+        markdown_text = """
+            This is a paragraph of text.
+            """
+        result = utils.markdown_to_html_node(markdown_text)
+        self.assertEqual(result.tag, "div")
 
     def test_markdown_to_html_node_paragraph(self):
         markdown_text = """
@@ -335,7 +343,7 @@ class TestUtils(unittest.TestCase):
         result = utils.markdown_to_html_node(markdown_text)
         children = ["This is a paragraph of text."]
         expected = [HTMLNode("p", None, children)]
-        self.assertEqual(result, expected)
+        self.assertEqual(result.children, expected)
 
     def test_markdown_to_html_node_heading(self):
         markdown_text = """
@@ -344,7 +352,7 @@ class TestUtils(unittest.TestCase):
         result = utils.markdown_to_html_node(markdown_text)
         children = ["This is a heading"]
         expected = [HTMLNode("h", None, children)]
-        self.assertEqual(result, expected)
+        self.assertEqual(result.children, expected)
 
     def test_markdown_to_html_node_code_block(self):
         markdown_text = """
@@ -353,7 +361,7 @@ class TestUtils(unittest.TestCase):
         result = utils.markdown_to_html_node(markdown_text)
         children = ["print('Hello, World!')"]
         expected = [HTMLNode("code", None, children)]
-        self.assertEqual(result, expected)
+        self.assertEqual(result.children, expected)
 
     def test_markdown_to_html_node_quote(self):
         markdown_text = """
@@ -362,7 +370,7 @@ class TestUtils(unittest.TestCase):
         result = utils.markdown_to_html_node(markdown_text)
         children = ["This is a quote block"]
         expected = [HTMLNode("q", None, children)]
-        self.assertEqual(result, expected)
+        self.assertEqual(result.children, expected)
 
     def test_markdown_to_html_node_unordered_list(self):
         markdown_text = """
@@ -377,7 +385,7 @@ class TestUtils(unittest.TestCase):
             HTMLNode("li", None, ["This is another list item"]),
         ]
         expected = [HTMLNode("ul", None, children)]
-        self.assertEqual(result, expected)
+        self.assertEqual(result.children, expected)
 
     def test_markdown_to_html_node_ordered_list(self):
         markdown_text = """
@@ -392,4 +400,4 @@ class TestUtils(unittest.TestCase):
             HTMLNode("li", None, ["This is another list item"]),
         ]
         expected = [HTMLNode("ol", None, children)]
-        self.assertEqual(result, expected)
+        self.assertEqual(result.children, expected)
