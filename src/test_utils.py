@@ -271,3 +271,55 @@ class TestUtils(unittest.TestCase):
 
         for i in range(len(result)):
             self.assertEqual(result[i], expected_blocks[i])
+
+
+
+    def test_block_to_block_type_paragraph(self):
+        block = "This is a paragraph of text. It has some **bold** and *italic* words inside of it."
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "paragraph")
+
+    def test_block_to_block_type_heading(self):
+        block = "# This is a heading"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "heading")
+
+    def test_block_to_block_type_code_block(self):
+        block = "```python\nprint('Hello, World!')\n```"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "code")
+
+    def test_block_to_block_type_code_block_invalid(self):
+        block = "```python\nprint('Hello, World!')"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "paragraph")
+
+    def test_block_to_block_type_quote(self):
+        block = "> This is a quote block"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "quote")
+
+    def test_block_to_block_type_unordered_list_star(self):
+        block = "* This is the first list item in a list block\n* This is a list item\n* This is another list item"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "unordered_list")
+
+    def test_block_to_block_type_unordered_list_invalid_no_space_after_star(self):
+        block = "* This is the first list item in a list block\n*This is a list item\n+ This is another list item"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "paragraph")
+
+    def test_block_to_block_type_unordered_list_hyphen(self):
+        block = "- This is the first list item in a list block\n- This is a list item\n- This is another list item"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "unordered_list")
+
+    def test_block_to_block_type_ordered_list(self):
+        block = "1. This is the first list item in a list block\n2. This is a list item\n3. This is another list item"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "ordered_list")
+
+    def test_block_to_block_type_ordered_list_invalid(self):
+        block = "1. This is the first list item in a list block\n2. This is a list item\n4. This is another list item"
+        result = utils.block_to_block_type(block)
+        self.assertEqual(result, "paragraph")

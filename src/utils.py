@@ -127,3 +127,32 @@ def markdown_to_blocks(markdown):
 
             blocks.append(block)
     return blocks
+
+
+
+def block_to_block_type(block_text):
+    if block_text.startswith("# "):
+        return "heading"
+    elif block_text.startswith("```") and block_text.endswith("```"):
+        return "code"
+    elif block_text.startswith(">"):
+        return "quote"
+    elif block_text.startswith("* ") or block_text.startswith("- "):
+        lines = block_text.split("\n")
+        for line in lines:
+            line.strip()
+            if not line.startswith(block_text[:2]):
+                return "paragraph"
+        return "unordered_list"
+
+    elif block_text.startswith("1. "):
+        lines = block_text.split("\n")
+        line_num = 1
+        for line in lines:
+            line.strip()
+            if not line.startswith(f"{line_num}. "):
+                return "paragraph"
+            line_num += 1
+        return "ordered_list"
+    else:
+        return "paragraph"
