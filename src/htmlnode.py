@@ -26,4 +26,10 @@ class HTMLNode():
         return f"<{self.tag}{props}>{children_str}</{self.tag}>"
 
 
-
+    # For unit testing
+    def __eq__(self, other):
+        if not isinstance(other, HTMLNode):
+            return False
+        return (self.tag == other.tag and
+                self.props == other.props and
+                self.children == other.children)

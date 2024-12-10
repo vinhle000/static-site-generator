@@ -168,7 +168,7 @@ def block_to_block_type(block_text):
         lines = block_text.split("\n")
         line_num = 1
         for line in lines:
-            line.strip()
+            line = line.strip()
             if not line.startswith(f"{line_num}. "):
                 return "paragraph"
             line_num += 1
@@ -185,34 +185,28 @@ def block_to_block_type(block_text):
 # I don't want to give you my exact functions because I want you to do this from scratch.
 # However, I'll give you the basic order of operations:
 
-# [] Split the markdown into blocks (you already have a function for this)
+# [ ] Split the markdown into blocks (you already have a function for this)
 
-# [] Loop over each block:
-    # [] Determine the type of block (you already have a function for this)
-    # [] Based on the type of block, create a new HTMLNode with the proper data
-# [] Assign the proper child HTMLNode objects to the block node.
+# [ ] Loop over each block:
+    # [x] Determine the type of block (you already have a function for this)
+    # [ ] Based on the type of block, create a new HTMLNode with the proper data
+# [ ] Assign the proper child HTMLNode objects to the block node.
     # I created a shared text_to_children(text) function that works for all block types.
     # It takes a string of text and returns a list of HTMLNodes that represent the inline markdown using
     # previously created functions (think TextNode -> HTMLNode).
 
-# [] Make all the block nodes children under a single parent HTML node (which should just be a div) and return it.
+# [ ] Make all the block nodes children under a single parent HTML node (which should just be a div) and return it.
 
 
 def markdown_to_html_node(markdown):
     pass
-    # neeed to make html nmode, and child body node,
-    # set body child to new_nodes
-    # return
+
     blocks = markdown_to_blocks(markdown)
     nodes = []
     for block in blocks:
         type = block_to_block_type(block)
-        print('blocks -- ', block)
-        print('type - ', type)
-        print('')
         new_node = block_to_html_node(block, type)
         nodes.append(new_node)
-
     return nodes
 
 def text_to_children(text):
@@ -222,28 +216,43 @@ def text_to_children(text):
         child_nodes.append(text_node_to_html_node(node))
     return child_nodes
 
-def block_to_paragraph_node(text): #paragraph
+def block_to_paragraph_node(text):
     children = text_to_children(text)
-    paragraph_node = HTMLNode("p", None, children)
-    print(' p tag ', paragraph_node)
-    return paragraph_node
+    return HTMLNode("p", None, children)
 
 def block_to_heading_node(text):
-    pass
+    children = text_to_children(text[2:])
+    return HTMLNode("h", None, children)
 
 def block_to_code_node(text):
-    pass
+    children = text_to_children(text[3:-3])
+    return HTMLNode("code", None, children)
 
 def block_to_quote_node(text):
-    pass
+    children = text_to_children(text[1:])
+    return HTMLNode("q", None, children)
 
 
 def block_to_unordered_list_node(text):
-    pass
+    list_item_nodes = []
+    sections = text.split("\n")
+    for section in sections:
+        children = text_to_children(section[2:])
+        list_item_node = HTMLNode("li", None, children)
+        list_item_nodes.append(list_item_node)
+
+    return HTMLNode("ul", None, list_item_nodes)
 
 def block_to_ordered_list_node(text):
-    pass
+    list_item_nodes = []
+    sections = text.split("\n")
+    for section in sections:
+        section = section.strip()
+        children = text_to_children(section[3:])
+        list_item_node = HTMLNode("li", None, children)
+        list_item_nodes.append(list_item_node)
 
+    return HTMLNode("ol", None, list_item_nodes)
 
 def block_to_html_node(block_text, type):
     map = {

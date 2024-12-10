@@ -332,9 +332,64 @@ class TestUtils(unittest.TestCase):
 
             This is a paragraph of text.
             """
-
         result = utils.markdown_to_html_node(markdown_text)
-        children = "This is a paragraph of text."
-        expected = HTMLNode("p", None, [children])
-        self.assertEqual(result, [expected])
+        children = ["This is a paragraph of text."]
+        expected = [HTMLNode("p", None, children)]
+        self.assertEqual(result, expected)
 
+    def test_markdown_to_html_node_heading(self):
+        markdown_text = """
+            # This is a heading
+            """
+        result = utils.markdown_to_html_node(markdown_text)
+        children = ["This is a heading"]
+        expected = [HTMLNode("h", None, children)]
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_code_block(self):
+        markdown_text = """
+        ```print('Hello, World!')```
+        """
+        result = utils.markdown_to_html_node(markdown_text)
+        children = ["print('Hello, World!')"]
+        expected = [HTMLNode("code", None, children)]
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_quote(self):
+        markdown_text = """
+            >This is a quote block
+            """
+        result = utils.markdown_to_html_node(markdown_text)
+        children = ["This is a quote block"]
+        expected = [HTMLNode("q", None, children)]
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_unordered_list(self):
+        markdown_text = """
+        * This is the first list item in a list block
+        * This is a list item
+        * This is another list item
+        """
+        result = utils.markdown_to_html_node(markdown_text)
+        children = [
+            HTMLNode("li", None, ["This is the first list item in a list block"]),
+            HTMLNode("li", None, ["This is a list item"]),
+            HTMLNode("li", None, ["This is another list item"]),
+        ]
+        expected = [HTMLNode("ul", None, children)]
+        self.assertEqual(result, expected)
+
+    def test_markdown_to_html_node_ordered_list(self):
+        markdown_text = """
+        1. This is the first list item in a list block
+        2. This is a list item
+        3. This is another list item
+        """
+        result = utils.markdown_to_html_node(markdown_text)
+        children = [
+            HTMLNode("li", None, ["This is the first list item in a list block"]),
+            HTMLNode("li", None, ["This is a list item"]),
+            HTMLNode("li", None, ["This is another list item"]),
+        ]
+        expected = [HTMLNode("ol", None, children)]
+        self.assertEqual(result, expected)
