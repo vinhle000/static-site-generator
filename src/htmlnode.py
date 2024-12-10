@@ -21,9 +21,9 @@ class HTMLNode():
 
 
     def __repr__(self):
-        str = (f"tag = {self.tag} \n value = {self.value} \n children = {self.children} \n props = {self.props}")
-
-
+        props = " ".join(f'{key}="{value}"' for key, value in self.props.items())
+        children_str = "".join(str(child) for child in self.children)
+        return f"<{self.tag}{props}>{children_str}</{self.tag}>"
 
 
 

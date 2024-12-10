@@ -1,5 +1,24 @@
 from textnode import TextNode, TextType
+from htmlnode import HTMLNode
 import re
+
+
+
+def text_node_to_html_node(text_node):
+    if text_node.text_type == TextType.TEXT:
+        return text_node.text
+    elif text_node.text_type == TextType.BOLD:
+        return f"<b>{text_node.text}</b>"
+    elif text_node.text_type == TextType.ITALIC:
+        return f"<i>{text_node.text}</i>"
+    elif text_node.text_type == TextType.CODE:
+        return f"<code>{text_node.text}</code>"
+    elif text_node.text_type == TextType.LINK:
+        return f'<a href="{text_node.url}">{text_node.text}</a>'
+    elif text_node.text_type == TextType.IMAGE:
+        return f'<img src="{text_node.url}" alt="{text_node.text}">'
+    else:
+        raise ValueError("Invalid text type")
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -156,3 +175,86 @@ def block_to_block_type(block_text):
         return "ordered_list"
     else:
         return "paragraph"
+
+
+# [] converts a full markdown document into a single parent HTMLNode.
+# That one parent HTMLNode should of course contain many child HTMLNode objects representing the nested elements.
+
+# I created an additional 8 helper functions to keep my code neat and easy to understand,
+# because there's a lot of logic necessary for the markdown_to_html_node.
+# I don't want to give you my exact functions because I want you to do this from scratch.
+# However, I'll give you the basic order of operations:
+
+# [] Split the markdown into blocks (you already have a function for this)
+
+# [] Loop over each block:
+    # [] Determine the type of block (you already have a function for this)
+    # [] Based on the type of block, create a new HTMLNode with the proper data
+# [] Assign the proper child HTMLNode objects to the block node.
+    # I created a shared text_to_children(text) function that works for all block types.
+    # It takes a string of text and returns a list of HTMLNodes that represent the inline markdown using
+    # previously created functions (think TextNode -> HTMLNode).
+
+# [] Make all the block nodes children under a single parent HTML node (which should just be a div) and return it.
+
+
+def markdown_to_html_node(markdown):
+    pass
+    # neeed to make html nmode, and child body node,
+    # set body child to new_nodes
+    # return
+    blocks = markdown_to_blocks(markdown)
+    nodes = []
+    for block in blocks:
+        type = block_to_block_type(block)
+        print('blocks -- ', block)
+        print('type - ', type)
+        print('')
+        new_node = block_to_html_node(block, type)
+        nodes.append(new_node)
+
+    return nodes
+
+def text_to_children(text):
+    textnodes = text_to_textnodes(text)
+    child_nodes = []
+    for node in textnodes:
+        child_nodes.append(text_node_to_html_node(node))
+    return child_nodes
+
+def block_to_paragraph_node(text): #paragraph
+    children = text_to_children(text)
+    paragraph_node = HTMLNode("p", None, children)
+    print(' p tag ', paragraph_node)
+    return paragraph_node
+
+def block_to_heading_node(text):
+    pass
+
+def block_to_code_node(text):
+    pass
+
+def block_to_quote_node(text):
+    pass
+
+
+def block_to_unordered_list_node(text):
+    pass
+
+def block_to_ordered_list_node(text):
+    pass
+
+
+def block_to_html_node(block_text, type):
+    map = {
+        "paragraph": block_to_paragraph_node,
+        "heading": block_to_heading_node,
+        "code": block_to_code_node,
+        "quote": block_to_quote_node,
+        "unordered_list": block_to_unordered_list_node,
+        "ordered_list": block_to_ordered_list_node
+    }
+
+    return map[type](block_text)
+
+

@@ -2,6 +2,7 @@
 import unittest
 import utils
 from textnode import TextNode, TextType
+from htmlnode import HTMLNode
 
 class TestUtils(unittest.TestCase):
 
@@ -323,3 +324,17 @@ class TestUtils(unittest.TestCase):
         block = "1. This is the first list item in a list block\n2. This is a list item\n4. This is another list item"
         result = utils.block_to_block_type(block)
         self.assertEqual(result, "paragraph")
+
+
+
+    def test_markdown_to_html_node_paragraph(self):
+        markdown_text = """
+
+            This is a paragraph of text.
+            """
+
+        result = utils.markdown_to_html_node(markdown_text)
+        children = "This is a paragraph of text."
+        expected = HTMLNode("p", None, [children])
+        self.assertEqual(result, [expected])
+
