@@ -1,7 +1,9 @@
 from textnode import TextNode, TextType
 from htmlnode import HTMLNode
 import re
-
+import os
+import shutil
+import pathlib
 
 
 def text_node_to_html_node(text_node):
@@ -220,9 +222,9 @@ def block_to_code_node(text):
     return HTMLNode("code", None, children)
 
 
-def block_to_quote_node(text):
-    children = text_to_children(text[1:])
-    return HTMLNode("q", None, children)
+def block_to_quote_node(text): #<blockquote> tag for block level, and in-line is <q>
+    children = text_to_children(text[1:].strip())
+    return HTMLNode("blockquote", None, children)
 
 
 def block_to_unordered_list_node(text):
@@ -262,12 +264,66 @@ def block_to_html_node(block_text, type):
 
 
 def extract_title(markdown):
-    blocks = markdown_to_blocks(markdown)
-    for block in blocks:
-        block_type = block_to_block_type(block)
-        if block_type == "heading":
-            sections = block.split(" ", maxsplit=1)
-            if len(sections[0]) == 1: # should check for one # char
-                return sections[1]
+    for line in markdown.split("\n"):
+        line = line.strip()
+        if line.startswith("# "):
+            return line[2:].strip()
+    raise Exception("No h1 header found")
 
-    raise Exception("No h1 title found in markdown")
+
+def copy_content(src, dest):
+    if os.path.isfile(src):
+        shutil.copy(src, dest)
+        return
+
+    if not os.path.exists(dest):
+        os.mkdir(dest)
+
+    dir_paths = os.listdir(src)
+
+    for path in dir_paths:
+        src_path = os.path.join(src, path)
+        dest_path = os.path.join(dest, path)
+        copy_content(src_path, dest_path)
+    return
+
+def generate_page(from_path, template_path, dest_path):
+    print("Generating page from from_path to dest_path using template_path")
+
+    with open(from_path,'r') as file:
+        markdown_content = file.read()
+
+    with open(template_path, 'r+') as file:
+        template_content = file.read()
+
+    markdown_title = extract_title(markdown_content)
+    html_node = markdown_to_html_node(markdown_content)
+    html = template_content.replace("{{ Title }}", markdown_title)
+    html = html.replace("{{ Content }}", html_node.to_html())
+
+
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    with open(dest_path, "w") as file:
+        file.write(html)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+
+    def gen_page(curr_path, dest_path):
+        print('')
+
+        if os.path.isfile(curr_path):
+            print('curr ', curr_path)
+            print('dest ', dest_path)
+
+
+            if curr_path.endswith('.md'):
+                generate_page(curr_path, template_path, os.path.join(os.path.dirname(dest_path), "index.html"))
+            return
+
+        paths = os.listdir(curr_path)
+        for path in paths:
+            curr = os.path.join(curr_path, path)
+            dest = os.path.join(dest_path, path)
+            gen_page(curr, dest)
+
+    gen_page(dir_path_content, dest_dir_path)

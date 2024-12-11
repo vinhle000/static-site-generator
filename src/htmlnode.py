@@ -8,7 +8,12 @@ class HTMLNode():
         self.props = props if props is not None else {}
 
     def to_html(self ):
-        raise NotImplementedError()
+        props = " ".join(f'{key}="{value}"' for key, value in self.props.items())
+        children_str = "".join(child.to_html() if isinstance(child, HTMLNode) else str(child) for child in self.children)
+        if props:
+            return f"<{self.tag} {props}>{children_str}</{self.tag}"
+        else:
+            return f"<{self.tag}>{children_str}</{self.tag}>"
 
     def props_to_html(self):
         props_list = []
