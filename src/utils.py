@@ -312,9 +312,6 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         print('')
 
         if os.path.isfile(curr_path):
-            print('curr ', curr_path)
-            print('dest ', dest_path)
-
 
             if curr_path.endswith('.md'):
                 generate_page(curr_path, template_path, os.path.join(os.path.dirname(dest_path), "index.html"))
