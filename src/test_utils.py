@@ -351,8 +351,25 @@ class TestUtils(unittest.TestCase):
             """
         result = utils.markdown_to_html_node(markdown_text)
         children = ["This is a heading"]
-        expected = [HTMLNode("h", None, children)]
+        expected = [HTMLNode("h1", None, children)]
         self.assertEqual(result.children, expected)
+
+    def test_markdown_to_html_node_heading(self):
+        markdown_text = """
+            # This is a heading
+
+            ## This is a level 2 heading
+
+            ###### This is a level 6 heading
+        """
+
+        result = utils.markdown_to_html_node(markdown_text)
+        expected = HTMLNode("div", children=[
+            HTMLNode("h1", children=["This is a heading"]),
+            HTMLNode("h2", children=["This is a level 2 heading"]),
+            HTMLNode("h6", children=["This is a level 6 heading"])
+        ])
+        self.assertEqual(result, expected)
 
     def test_markdown_to_html_node_code_block(self):
         markdown_text = """
@@ -401,3 +418,7 @@ class TestUtils(unittest.TestCase):
         ]
         expected = [HTMLNode("ol", None, children)]
         self.assertEqual(result.children, expected)
+
+
+    def test_extract_title(self):
+        pass

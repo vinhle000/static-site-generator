@@ -150,12 +150,20 @@ def markdown_to_blocks(markdown):
 
 
 def block_to_block_type(block_text):
-    if block_text.startswith("# "):
-        return "heading"
+    block_text = block_text.strip()
+    if block_text.startswith("#"):
+        index = 0
+        while index < len(block_text) and block_text[index] == "#":
+            index += 1
+        if index <= 6 and index < len(block_text) and block_text[index] == ' ':
+            return "heading"
+
     elif block_text.startswith("```") and block_text.endswith("```"):
         return "code"
+
     elif block_text.startswith(">"):
         return "quote"
+
     elif block_text.startswith("* ") or block_text.startswith("- "):
         lines = block_text.split("\n")
         for line in lines:
@@ -187,6 +195,7 @@ def markdown_to_html_node(markdown):
         nodes.append(new_node)
     return HTMLNode("div", None, nodes)
 
+
 def text_to_children(text):
     textnodes = text_to_textnodes(text)
     child_nodes = []
@@ -194,17 +203,21 @@ def text_to_children(text):
         child_nodes.append(text_node_to_html_node(node))
     return child_nodes
 
+
 def block_to_paragraph_node(text):
     children = text_to_children(text)
     return HTMLNode("p", None, children)
 
+
 def block_to_heading_node(text):
-    children = text_to_children(text[2:])
-    return HTMLNode("h", None, children)
+    children = text_to_children(text[level + 1:]) #account for space char after '#'s
+    return HTMLNode(f"h{level}", None, children)
+
 
 def block_to_code_node(text):
     children = text_to_children(text[3:-3])
     return HTMLNode("code", None, children)
+
 
 def block_to_quote_node(text):
     children = text_to_children(text[1:])
@@ -221,6 +234,7 @@ def block_to_unordered_list_node(text):
 
     return HTMLNode("ul", None, list_item_nodes)
 
+
 def block_to_ordered_list_node(text):
     list_item_nodes = []
     sections = text.split("\n")
@@ -231,6 +245,7 @@ def block_to_ordered_list_node(text):
         list_item_nodes.append(list_item_node)
 
     return HTMLNode("ol", None, list_item_nodes)
+
 
 def block_to_html_node(block_text, type):
     map = {
@@ -245,3 +260,5 @@ def block_to_html_node(block_text, type):
     return map[type](block_text)
 
 
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
