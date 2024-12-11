@@ -421,4 +421,23 @@ class TestUtils(unittest.TestCase):
 
 
     def test_extract_title(self):
-        pass
+        markdown_text = """
+            ###### This is a level 6 heading
+
+            ## This is a level 2 heading
+
+            # This is a heading
+        """
+
+        result = utils.extract_title(markdown_text)
+        self.assertEqual(result, "This is a heading")
+
+
+    def test_extract_title_no_title_found(self):
+        markdown_text = """
+            ###### This is a level 6 heading
+
+            ## This is a level 2 heading
+        """
+        with self.assertRaises(Exception):
+            utils.extract_title(markdown_text)

@@ -210,6 +210,7 @@ def block_to_paragraph_node(text):
 
 
 def block_to_heading_node(text):
+    level = len(text.split(' ')[0])
     children = text_to_children(text[level + 1:]) #account for space char after '#'s
     return HTMLNode(f"h{level}", None, children)
 
@@ -262,3 +263,11 @@ def block_to_html_node(block_text, type):
 
 def extract_title(markdown):
     blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        if block_type == "heading":
+            sections = block.split(" ", maxsplit=1)
+            if len(sections[0]) == 1: # should check for one # char
+                return sections[1]
+
+    raise Exception("No h1 title found in markdown")
